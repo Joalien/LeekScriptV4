@@ -1,4 +1,4 @@
-package com.github.joalien.leekscriptv4.listeners
+package fr.kubys.leekscriptv4.listeners
 
 import com.intellij.openapi.application.ApplicationActivationListener
 import com.intellij.openapi.diagnostic.thisLogger

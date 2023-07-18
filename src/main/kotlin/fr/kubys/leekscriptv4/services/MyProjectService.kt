@@ -1,9 +1,9 @@
-package com.github.joalien.leekscriptv4.services
+package fr.kubys.leekscriptv4.services
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.github.joalien.leekscriptv4.MyBundle
+import fr.kubys.leekscriptv4.MyBundle
 
 @Service(Service.Level.PROJECT)
 class MyProjectService(project: Project) {

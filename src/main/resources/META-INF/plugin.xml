@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.joalien.leekscriptv4</id>
+    <id>fr.kubys.leekscriptv4</id>
     <name>LeekScriptV4 Template</name>
     <vendor>joalien</vendor>
 
@@ -9,10 +9,12 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.joalien.leekscriptv4.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+<!--        <toolWindow factoryClass="fr.kubys.leekscriptv4.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>-->
+        <moduleType id="LEEKSCRIPT_MODULE" implementationClass="fr.kubys.leekscriptv4.project.LSModuleType" order="last"/>
+        <moduleBuilder builderClass="fr.kubys.leekscriptv4.project.LSModuleBuilder"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.joalien.leekscriptv4.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
+        <listener class="fr.kubys.leekscriptv4.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
 </idea-plugin>

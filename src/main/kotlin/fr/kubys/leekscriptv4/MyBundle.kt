@@ -1,4 +1,4 @@
-package com.github.joalien.leekscriptv4
+package fr.kubys.leekscriptv4
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls

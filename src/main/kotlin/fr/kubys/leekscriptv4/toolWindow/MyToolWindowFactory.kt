@@ -1,4 +1,4 @@
-package com.github.joalien.leekscriptv4.toolWindow
+package fr.kubys.leekscriptv4.toolWindow
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -8,8 +8,8 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.content.ContentFactory
-import com.github.joalien.leekscriptv4.MyBundle
-import com.github.joalien.leekscriptv4.services.MyProjectService
+import fr.kubys.leekscriptv4.MyBundle
+import fr.kubys.leekscriptv4.services.MyProjectService
 import javax.swing.JButton
 
 
