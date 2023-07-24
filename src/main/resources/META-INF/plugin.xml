@@ -9,5 +9,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <moduleType id="LEEKSCRIPT_MODULE" implementationClass="fr.kubys.leekscriptv4.project.LSModuleType" order="last"/>
         <moduleBuilder builderClass="fr.kubys.leekscriptv4.project.LSModuleBuilder"/>
+
+        <applicationConfigurable id="fr.kubys.leekscriptv4.options.LeekScriptConfigurable" instance="fr.kubys.leekscriptv4.options.LeekScriptConfigurable" parentId="language"/>
+        <applicationService serviceImplementation="fr.kubys.leekscriptv4.options.LSSettings"/>
     </extensions>
 </idea-plugin>

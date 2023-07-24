@@ -1,11 +1,12 @@
 package fr.kubys.leekscriptv4.options;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.*;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
-@State(name = "LSSettings", storages = {@Storage(file = "leekscript.xml")})
+@State(name = "LSSettings", storages = {@Storage("leekscript.xml")})
 public class LSSettings implements PersistentStateComponent<LSSettings> {
     private String siteUrl = "https://leekwars.com";
     private String siteLogin;
@@ -14,10 +15,8 @@ public class LSSettings implements PersistentStateComponent<LSSettings> {
     private String authLogin;
     private String authPassword;
 
-    private static final LSSettings INSTANCE = new LSSettings();
-
     public static LSSettings getInstance() {
-        return INSTANCE;
+        return ApplicationManager.getApplication().getService(LSSettings.class);
     }
 
     @Nullable

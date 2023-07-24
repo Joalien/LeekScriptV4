@@ -42,9 +42,4 @@ public class LSModuleBuilder extends ModuleBuilder {
     public ModuleWizardStep getCustomOptionsStep(WizardContext context, Disposable parentDisposable) {
         return new LSModuleWizardStep();
     }
-//
-//    @Override
-//    public boolean isAvailable() {
-//        return true;
-//    } // to remove ?
 }
