@@ -6,15 +6,8 @@
 
     <depends>com.intellij.modules.platform</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
-
     <extensions defaultExtensionNs="com.intellij">
-<!--        <toolWindow factoryClass="fr.kubys.leekscriptv4.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>-->
         <moduleType id="LEEKSCRIPT_MODULE" implementationClass="fr.kubys.leekscriptv4.project.LSModuleType" order="last"/>
         <moduleBuilder builderClass="fr.kubys.leekscriptv4.project.LSModuleBuilder"/>
     </extensions>
-
-    <applicationListeners>
-        <listener class="fr.kubys.leekscriptv4.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
 </idea-plugin>
