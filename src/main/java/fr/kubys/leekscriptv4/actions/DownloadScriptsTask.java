@@ -5,6 +5,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
@@ -19,9 +20,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +46,46 @@ public class DownloadScriptsTask implements Runnable {
         ));
     }
 
+    private void downloadFiles() throws IOException, PluginNotConfiguredException, ApiException {
+        System.out.println("Downloading files...");
+        Module module = ModuleManager.getInstance(project).getModules()[0];
+        VirtualFile sourceRoots = ModuleRootManager.getInstance(module).getSourceRoots()[0];
+        PsiDirectory srcDirectory = PsiManager.getInstance(project).findDirectory(sourceRoots);
+
+        for (Map.Entry<Integer, String> entry : LSApiClient.getInstance().listScripts().entrySet()) {
+            // TODO run async
+            downloadScript(srcDirectory, entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void downloadScript(PsiDirectory srcDirectory, Integer id, String name) throws IOException, PluginNotConfiguredException, ApiException {
+        AIResponse leekScript = LSApiClient.getInstance().downloadScript(id);
+
+        String fileName = String.format("%s__%s.lks", name, id);
+
+        PsiFile file = PsiUtils.createDummyFile(project, fileName, leekScript.getAi().getCode());
+
+        PsiFile existingFile = srcDirectory.findFile(fileName);
+
+        if (existingFile == null) {
+            srcDirectory.add(file);
+        } else {
+            assert existingFile.getViewProvider().getDocument() != null;
+            if (!Objects.equals(existingFile.getViewProvider().getDocument().getText(), file.getText())) {
+                int result = JOptionPane.showConfirmDialog(
+                        null,
+                        String.format("Do you want to override %s", name),
+                        "Downloading scripts...",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (result == JOptionPane.YES_OPTION) {
+                    ApplicationManager.getApplication().runWriteAction(() -> existingFile.getViewProvider().getDocument().setText(file.getText()));
+                }
+            }
+        }
+    }
+
     public void parseScriptTags(Document editor) {
         Elements scripts = editor.select("head script");
 
@@ -58,35 +101,6 @@ public class DownloadScriptsTask implements Runnable {
             if (matcher.matches()) {
                 parseNames(matcher);
             }
-        }
-    }
-
-    private void downloadFiles() throws IOException, PluginNotConfiguredException, ApiException {
-        System.out.println("Downloading files...");
-        Module module = ModuleManager.getInstance(project).getModules()[0];
-        VirtualFile sourceRoots = ModuleRootManager.getInstance(module).getSourceRoots()[0];
-        PsiDirectory srcDirectory = PsiManager.getInstance(project).findDirectory(sourceRoots);
-
-        for (Map.Entry<Integer, String> entry : LSApiClient.getInstance().listScripts().entrySet()) {
-            // TODO run async
-            downloadScript(srcDirectory, entry);
-        }
-    }
-
-    private void downloadScript(PsiDirectory srcDirectory, Map.Entry<Integer, String> entry) throws IOException, PluginNotConfiguredException, ApiException {
-        AIResponse leekScript = LSApiClient.getInstance().downloadScript(entry.getKey());
-
-        String fileName = String.format("%s__%s.lks", entry.getValue(), entry.getKey());
-
-        PsiFile file = PsiUtils.createDummyFile(project, fileName, leekScript.getAi().getCode());
-
-        PsiFile existingFile = srcDirectory.findFile(fileName);
-
-        if (existingFile == null) {
-            srcDirectory.add(file);
-        } else {
-            assert existingFile.getViewProvider().getDocument() != null;
-            existingFile.getViewProvider().getDocument().setText(file.getText());
         }
     }
 

@@ -156,13 +156,7 @@ public class LSApiClient {
     public Map<Integer, String> listScripts() throws IOException, PluginNotConfiguredException, ApiException {
         AIsResponse resp = secureGet("/api/ai/get-farmer-ais", AIsResponse.class);
 
-        Map<Integer, String> scripts = new TreeMap<>();
-
-        for (AIsResponse.AI fun : resp.getAis()) {
-            scripts.put(fun.getId(), fun.getName());
-        }
-
-        return scripts;
+        return resp.getAis().stream().collect(Collectors.toMap(AIsResponse.AI::getId, AIsResponse.AI::getName));
     }
 
     public AIResponse downloadScript(int id) throws IOException, PluginNotConfiguredException, ApiException {
