@@ -11,9 +11,9 @@ public class LSSettings implements PersistentStateComponent<LSSettings> {
     private String siteUrl = "https://leekwars.com";
     private String siteLogin;
     private String sitePassword;
-    private boolean enableAuth;
-    private String authLogin;
-    private String authPassword;
+    private boolean enableProxy;
+    private String proxyDomainName;
+    private String proxyPort;
 
     public static LSSettings getInstance() {
         return ApplicationManager.getApplication().getService(LSSettings.class);
@@ -38,14 +38,6 @@ public class LSSettings implements PersistentStateComponent<LSSettings> {
         return siteUrl;
     }
 
-    public String getAuthLogin() {
-        return authLogin;
-    }
-
-    public String getAuthPassword() {
-        return authPassword;
-    }
-
     public String getSiteLogin() {
         return siteLogin;
     }
@@ -54,8 +46,8 @@ public class LSSettings implements PersistentStateComponent<LSSettings> {
         return sitePassword;
     }
 
-    public boolean isEnableAuth() {
-        return enableAuth;
+    public boolean isProxyEnabled() {
+        return enableProxy;
     }
 
     public void setSiteLogin(String siteLogin) {
@@ -66,19 +58,27 @@ public class LSSettings implements PersistentStateComponent<LSSettings> {
         this.sitePassword = sitePassword;
     }
 
-    public void setEnableAuth(boolean enableAuth) {
-        this.enableAuth = enableAuth;
-    }
-
-    public void setAuthLogin(String authLogin) {
-        this.authLogin = authLogin;
-    }
-
-    public void setAuthPassword(String authPassword) {
-        this.authPassword = authPassword;
+    public void setEnableProxy(boolean enableAuth) {
+        this.enableProxy = enableAuth;
     }
 
     public void setSiteUrl(String siteUrl) {
         this.siteUrl = siteUrl;
+    }
+
+    public String getProxyDomainName() {
+        return proxyDomainName;
+    }
+
+    public void setProxyDomainName(String proxyDomainName) {
+        this.proxyDomainName = proxyDomainName;
+    }
+
+    public String getProxyPort() {
+        return proxyPort;
+    }
+
+    public void setProxyPort(String proxyPort) {
+        this.proxyPort = proxyPort;
     }
 }

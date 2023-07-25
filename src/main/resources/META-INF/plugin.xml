@@ -12,5 +12,13 @@
 
         <applicationConfigurable id="fr.kubys.leekscriptv4.options.LeekScriptConfigurable" instance="fr.kubys.leekscriptv4.options.LeekScriptConfigurable" parentId="language"/>
         <applicationService serviceImplementation="fr.kubys.leekscriptv4.options.LSSettings"/>
+
+        <notificationGroup id="LeekScript" displayType="BALLOON"/>
     </extensions>
+
+    <actions>
+        <action class="fr.kubys.leekscriptv4.actions.FetchDataAction" id="LeekScript.UpdateAPI" text="Update LeekWars API" icon="/icons/leek.png">
+            <add-to-group group-id="ToolsMenu"/>
+        </action>
+    </actions>
 </idea-plugin>

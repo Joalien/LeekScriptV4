@@ -8,6 +8,7 @@ import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vcs.changes.RunnableBackgroundableWrapper;
 //import com.plopiplop.leekwars.actions.DownloadScriptsTask;
 //import com.plopiplop.leekwars.actions.UpdateAPITask;
+import fr.kubys.leekscriptv4.actions.UpdateAPITask;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +55,8 @@ public class LSModuleType extends ModuleType<LSModuleBuilder> implements ModuleB
     @Override
     public void moduleCreated(@NotNull final Module module) {
         RunnableBackgroundableWrapper wrapper = new RunnableBackgroundableWrapper(module.getProject(), "Preparing project...", () -> {
-//            new UpdateAPITask(module.getProject(), null).run();
+            // TODO wrap in pop-up
+//            new UpdateAPITask(module.getProject()).run();
 //            new DownloadScriptsTask(module.getProject()).run();
         });
 

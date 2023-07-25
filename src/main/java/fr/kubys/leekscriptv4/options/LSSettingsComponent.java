@@ -1,16 +1,10 @@
 package fr.kubys.leekscriptv4.options;
 
-import com.google.gson.GsonBuilder;
 import com.intellij.ui.TextFieldWithStoredHistory;
 import com.intellij.util.ui.FormBuilder;
+import fr.kubys.leekscriptv4.api.LSApiClient;
 
 import javax.swing.*;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class LSSettingsComponent {
 
@@ -34,31 +28,17 @@ public class LSSettingsComponent {
         proxyDomainName.setEnabled(enableProxy.isSelected());
         proxyPort.setEnabled(enableProxy.isSelected());
         checkConnexion.addActionListener(event -> {
+            checkConnexionResult.setText("Connecting...");
             try {
-                URL url = new URL(siteUrl.getText() + "/api/farmer/login-token");
-                HttpURLConnection conn;
-                if (enableProxy.isSelected()) {
-                    Proxy webProxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyDomainName.getText(), Integer.parseInt(proxyPort.getText())));
-                    conn = (HttpURLConnection) url.openConnection(webProxy);
-                } else {
-                    conn = (HttpURLConnection) url.openConnection();
-                }
-                conn.setDoOutput(true);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
-                    String data = Map.of("login", siteLogin.getText(),
-                                    "password", sitePassword.getText())
-                            .entrySet().stream()
-                            .map(entry -> entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
-                            .collect(Collectors.joining("&"));
-                    wr.write(data.getBytes());
-                }
-                Map map = new GsonBuilder().create().fromJson(new InputStreamReader(conn.getInputStream()), Map.class);
-                String token = map.get("token").toString();
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                LSApiClient.getInstance().connectToLeekWars();
                 checkConnexionResult.setText("Connexion successful!");
             } catch (Exception e) {
-                checkConnexionResult.setText("Connexion error: " + e.getMessage());
+                checkConnexionResult.setText("Connexion error: " + e);
             }
         });
 

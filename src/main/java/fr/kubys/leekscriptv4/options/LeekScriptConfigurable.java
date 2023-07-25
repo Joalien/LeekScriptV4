@@ -37,10 +37,10 @@ public class LeekScriptConfigurable implements SearchableConfigurable, Configura
     public boolean isModified () {
         LSSettings settings = LSSettings.getInstance();
 
-        return !StringUtil.equals(settings.getAuthLogin(), lsSettingsComponent.proxyDomainName.getText())
+        return !StringUtil.equals(settings.getProxyDomainName(), lsSettingsComponent.proxyDomainName.getText())
                 || !StringUtil.equals(settings.getSiteUrl(), lsSettingsComponent.siteUrl.getText())
-                || !StringUtil.equals(settings.getAuthPassword(), lsSettingsComponent.proxyPort.getText())
-                || settings.isEnableAuth() != lsSettingsComponent.enableProxy.isSelected()
+                || !StringUtil.equals(settings.getProxyPort(), lsSettingsComponent.proxyPort.getText())
+                || settings.isProxyEnabled() != lsSettingsComponent.enableProxy.isSelected()
                 || !StringUtil.equals(settings.getSiteLogin(), lsSettingsComponent.siteLogin.getText())
                 || !StringUtil.equals(settings.getSitePassword(), lsSettingsComponent.sitePassword.getText());
     }
@@ -50,9 +50,9 @@ public class LeekScriptConfigurable implements SearchableConfigurable, Configura
         LSSettings settings = LSSettings.getInstance();
 
         settings.setSiteUrl(lsSettingsComponent.siteUrl.getText());
-        settings.setEnableAuth(lsSettingsComponent.enableProxy.isSelected());
-        settings.setAuthLogin(lsSettingsComponent.proxyDomainName.getText());
-        settings.setAuthPassword(lsSettingsComponent.proxyPort.getText());
+        settings.setEnableProxy(lsSettingsComponent.enableProxy.isSelected());
+        settings.setProxyDomainName(lsSettingsComponent.proxyDomainName.getText());
+        settings.setProxyPort(lsSettingsComponent.proxyPort.getText());
         settings.setSiteLogin(lsSettingsComponent.siteLogin.getText());
         settings.setSitePassword(lsSettingsComponent.sitePassword.getText());
     }
@@ -62,9 +62,9 @@ public class LeekScriptConfigurable implements SearchableConfigurable, Configura
         LSSettings settings = LSSettings.getInstance();
 
         lsSettingsComponent.siteUrl.setText(settings.getSiteUrl());
-        lsSettingsComponent.enableProxy.setSelected(settings.isEnableAuth());
-        lsSettingsComponent.proxyDomainName.setText(settings.getAuthLogin());
-        lsSettingsComponent.proxyPort.setText(settings.getAuthPassword());
+        lsSettingsComponent.enableProxy.setSelected(settings.isProxyEnabled());
+        lsSettingsComponent.proxyDomainName.setText(settings.getProxyDomainName());
+        lsSettingsComponent.proxyPort.setText(settings.getProxyPort());
         lsSettingsComponent.siteLogin.setText(settings.getSiteLogin());
         lsSettingsComponent.sitePassword.setText(settings.getSitePassword());
     }
