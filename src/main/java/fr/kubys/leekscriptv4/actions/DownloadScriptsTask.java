@@ -26,6 +26,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.swing.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -35,27 +36,33 @@ import java.util.stream.Collectors;
 public class DownloadScriptsTask implements Runnable {
     private static final Pattern AI_IDS_REGEX = Pattern.compile("__AI_IDS = \\[([^\\]]+)\\];");
     private static final Pattern AI_NAMES_REGEX = Pattern.compile("__AI_NAMES = \\[([^\\]]+)\\];");
+    private final Map<Integer, PsiDirectory> folderPsiDirectory = new HashMap<>();
     private Map<Integer, FolderDto> folderTree = new HashMap<>();
-    private Map<Integer, PsiDirectory> folderPsiDirectory = new HashMap<>();
 
     private Map<String, String> files = new LinkedHashMap<>();
     private Project project;
 
     public DownloadScriptsTask(Project project) {
         this.project = project;
-        Module module = ModuleManager.getInstance(project).getModules()[0];
-        VirtualFile sourceRoots = ModuleRootManager.getInstance(module).getSourceRoots()[0];
-        PsiDirectory sourceDirectory = PsiManager.getInstance(project).findDirectory(sourceRoots);
+    }
+
+    private void init() throws FileNotFoundException {
+        Module module = ModuleManager.getInstance(this.project).getModules()[0];
+        VirtualFile sourceRoots = Arrays.stream(ModuleRootManager.getInstance(module).getSourceRoots())
+                .filter(virtualFile -> virtualFile.getName().equals("src"))
+                .findAny()
+                .orElseThrow(FileNotFoundException::new);
+        PsiDirectory sourceDirectory = PsiManager.getInstance(this.project).findDirectory(sourceRoots);
         folderPsiDirectory.put(0, sourceDirectory);
     }
 
     @Override
     public void run() {
         ApplicationManager.getApplication().invokeLater(() -> {
-                LSApiClient.callAction(this::downloadFiles);
-                Notifications.Bus.notify(new Notification("LeekScript", "Synchronization", "Synchronization successful!", NotificationType.INFORMATION), project);
-            }
-        );
+            LSApiClient.callAction(this::init);
+            LSApiClient.callAction(this::downloadFiles);
+            Notifications.Bus.notify(new Notification("LeekScript", "Synchronization", "Synchronization successful!", NotificationType.INFORMATION), project);
+        });
     }
 
     private void downloadFiles() throws IOException, PluginNotConfiguredException, ApiException {
@@ -108,8 +115,8 @@ public class DownloadScriptsTask implements Runnable {
             if (!Objects.equals(existingFile.getViewProvider().getDocument().getText(), file.getText())) {
                 int result = JOptionPane.showConfirmDialog(
                         null,
-                        String.format("Do you want to override %s", name),
-                        "Downloading scripts...",
+                        String.format("Do you want to override %s?", name),
+                        "Changes have been detected!",
                         JOptionPane.YES_NO_OPTION
                 );
 

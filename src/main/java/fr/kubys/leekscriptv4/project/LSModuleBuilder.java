@@ -26,8 +26,14 @@ public class LSModuleBuilder extends ModuleBuilder {
                     .orElseThrow()
                     .createChildDirectory(this, "src");
             contentEntry.addSourceFolder(srcDirectory, false);
+
+            VirtualFile genDirectory = Optional.ofNullable(contentEntry)
+                    .map(ContentEntry::getFile)
+                    .orElseThrow()
+                    .createChildDirectory(this, "gen");
+            contentEntry.addSourceFolder(genDirectory, false);
         } catch (IOException e) {
-            throw new ConfigurationException(e.getMessage(), "Unable to Create Src Folder");
+            throw new ConfigurationException(e.getMessage(), "Unable to Create Folder");
         }
 
     }

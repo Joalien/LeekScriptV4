@@ -17,7 +17,7 @@ public class LeekScriptConfigurable implements SearchableConfigurable, Configura
     @Nls(capitalization = Nls.Capitalization.Title)
     @Override
     public String getDisplayName() {
-        return "Leekscript Account Configuration";
+        return "Leekscript Account";
     }
 
 
