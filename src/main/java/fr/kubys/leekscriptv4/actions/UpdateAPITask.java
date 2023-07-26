@@ -28,11 +28,11 @@ public class UpdateAPITask implements Runnable {
     }
 
     private void writeApiFile() {
-        ApplicationManager.getApplication().invokeLater(() ->
-                ApplicationManager.getApplication().runWriteAction(() -> {
-                    try {
-                        Map<Integer, String> integerStringMap = LSApiClient.getInstance().listScripts();
-                        integerStringMap.forEach((key, value) -> {
+//        ApplicationManager.getApplication().invokeLater(() ->
+//                ApplicationManager.getApplication().runWriteAction(() -> {
+//                    try {
+//                        Map<Integer, String> integerStringMap = LSApiClient.getInstance().listScripts();
+//                        integerStringMap.forEach((key, value) -> {
 //                            try {
 //                                AIResponse ai = LSApiClient.getInstance().downloadScript(key);
 //
@@ -43,14 +43,14 @@ public class UpdateAPITask implements Runnable {
 //                            } catch (ApiException e) {
 //                                throw new RuntimeException(e);
 //                            }
-                        });
-
-                    } catch (Exception e) {
-                        Notifications.Bus.notify(new Notification("LeekScript", "LeekWars API", "Can't write API", NotificationType.ERROR));
-                        throw new RuntimeException(e);
-                    }
-                }
-        ));
+//                        });
+//
+//                    } catch (Exception e) {
+//                        Notifications.Bus.notify(new Notification("LeekScript", "LeekWars API", "Can't write API", NotificationType.ERROR));
+//                        throw new RuntimeException(e);
+//                    }
+//                }
+//        ));
     }
 
 //    private PsiDirectory findOrCreateGenSourceRoot() throws IOException {

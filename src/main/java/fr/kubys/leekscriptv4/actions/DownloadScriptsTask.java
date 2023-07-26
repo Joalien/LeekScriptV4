@@ -1,18 +1,23 @@
 package fr.kubys.leekscriptv4.actions;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import fr.kubys.leekscriptv4.api.ApiException;
 import fr.kubys.leekscriptv4.api.LSApiClient;
+import fr.kubys.leekscriptv4.api.dto.AIDto;
 import fr.kubys.leekscriptv4.api.dto.AIResponse;
+import fr.kubys.leekscriptv4.api.dto.AIsResponse;
+import fr.kubys.leekscriptv4.api.dto.FolderDto;
 import fr.kubys.leekscriptv4.options.PluginNotConfiguredException;
 import fr.kubys.leekscriptv4.psi.PsiUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -22,39 +27,68 @@ import org.jsoup.select.Elements;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class DownloadScriptsTask implements Runnable {
     private static final Pattern AI_IDS_REGEX = Pattern.compile("__AI_IDS = \\[([^\\]]+)\\];");
     private static final Pattern AI_NAMES_REGEX = Pattern.compile("__AI_NAMES = \\[([^\\]]+)\\];");
+    private Map<Integer, FolderDto> folderTree = new HashMap<>();
+    private Map<Integer, PsiDirectory> folderPsiDirectory = new HashMap<>();
 
     private Map<String, String> files = new LinkedHashMap<>();
     private Project project;
 
     public DownloadScriptsTask(Project project) {
         this.project = project;
+        Module module = ModuleManager.getInstance(project).getModules()[0];
+        VirtualFile sourceRoots = ModuleRootManager.getInstance(module).getSourceRoots()[0];
+        PsiDirectory sourceDirectory = PsiManager.getInstance(project).findDirectory(sourceRoots);
+        folderPsiDirectory.put(0, sourceDirectory);
     }
 
     @Override
     public void run() {
-        ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() ->
-                LSApiClient.callAction(this::downloadFiles)
-        ));
+        ApplicationManager.getApplication().invokeLater(() -> {
+                LSApiClient.callAction(this::downloadFiles);
+                Notifications.Bus.notify(new Notification("LeekScript", "Synchronization", "Synchronization successful!", NotificationType.INFORMATION), project);
+            }
+        );
     }
 
     private void downloadFiles() throws IOException, PluginNotConfiguredException, ApiException {
         System.out.println("Downloading files...");
-        Module module = ModuleManager.getInstance(project).getModules()[0];
-        VirtualFile sourceRoots = ModuleRootManager.getInstance(module).getSourceRoots()[0];
-        PsiDirectory srcDirectory = PsiManager.getInstance(project).findDirectory(sourceRoots);
 
-        for (Map.Entry<Integer, String> entry : LSApiClient.getInstance().listScripts().entrySet()) {
+        AIsResponse aIsResponse = LSApiClient.getInstance().listScripts();
+        folderTree = aIsResponse.getFolders().stream().collect(Collectors.toMap(FolderDto::getId, f -> f));
+
+        aIsResponse.getFolders().forEach(this::createFolder);
+
+        for (AIDto ai : aIsResponse.getAis()) {
             // TODO run async
-            downloadScript(srcDirectory, entry.getKey(), entry.getValue());
+            downloadScript(folderPsiDirectory.get(ai.getParent()), ai.getId(), ai.getName());
+        }
+    }
+
+    private void createFolder(FolderDto folder) {
+        PsiDirectory parent = folderPsiDirectory.get(folder.getParent());
+        if (parent == null) {
+            createFolder(folderTree.get(folder.getParent()));
+            parent = folderPsiDirectory.get(folder.getParent());
+        }
+        createFolder(parent, folder);
+    }
+
+
+    private void createFolder(PsiDirectory parentDirectory, FolderDto folder) {
+        if (parentDirectory.findSubdirectory(folder.buildName()) == null) {
+            ApplicationManager.getApplication().runWriteAction(() -> {
+                folderPsiDirectory.put(folder.getId(), parentDirectory.createSubdirectory(folder.buildName()));
+            });
+        } else {
+            folderPsiDirectory.put(folder.getId(), parentDirectory.findSubdirectory(folder.buildName()));
         }
     }
 

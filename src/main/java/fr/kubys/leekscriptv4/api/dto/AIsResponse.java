@@ -3,46 +3,18 @@ package fr.kubys.leekscriptv4.api.dto;
 import java.util.List;
 
 public class AIsResponse {
-    private List<AI> ais;
+    private List<AIDto> ais;
+    private List<FolderDto> folders;
 
-    public List<AI> getAis() {
+    public List<AIDto> getAis() {
         return ais;
     }
 
-    public void setAis(List<AI> ais) {
-        this.ais = ais;
+    public List<FolderDto> getFolders() {
+        return folders;
     }
 
-    public static class AI {
-        private int id;
-        private String name;
-        private int level;
-        private boolean valid;
-        private int folder;
-        private int v2;
-
-        public String getName() {
-            return name;
-        }
-
-        public int getLevel() {
-            return level;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public boolean isValid() {
-            return valid;
-        }
-
-        public int getFolder() {
-            return folder;
-        }
-
-        public int getV2() {
-            return v2;
-        }
+    public void setAis(List<AIDto> ais) {
+        this.ais = ais;
     }
 }

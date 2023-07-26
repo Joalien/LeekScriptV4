@@ -7,9 +7,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.util.net.HttpConfigurable;
 import fr.kubys.leekscriptv4.actions.CompilationException;
-import fr.kubys.leekscriptv4.api.dto.AIResponse;
-import fr.kubys.leekscriptv4.api.dto.AIsResponse;
-import fr.kubys.leekscriptv4.api.dto.GenericResponse;
+import fr.kubys.leekscriptv4.api.dto.*;
 import fr.kubys.leekscriptv4.model.ServerAction;
 import fr.kubys.leekscriptv4.options.LSSettings;
 import fr.kubys.leekscriptv4.options.PluginNotConfiguredException;
@@ -153,16 +151,13 @@ public class LSApiClient {
 //        return constants;
 //    }
 
-    public Map<Integer, String> listScripts() throws IOException, PluginNotConfiguredException, ApiException {
-        AIsResponse resp = secureGet("/api/ai/get-farmer-ais", AIsResponse.class);
-
-        return resp.getAis().stream().collect(Collectors.toMap(AIsResponse.AI::getId, AIsResponse.AI::getName));
+    public AIsResponse listScripts() throws IOException, PluginNotConfiguredException, ApiException {
+        return secureGet("/api/ai/get-farmer-ais", AIsResponse.class);
     }
 
     public AIResponse downloadScript(int id) throws IOException, PluginNotConfiguredException, ApiException {
         System.out.println("Downloading " + id);
         AIResponse resp = secureGet("/api/ai/get/" + id, AIResponse.class);
-        System.out.println(resp);
         return resp;
     }
 
