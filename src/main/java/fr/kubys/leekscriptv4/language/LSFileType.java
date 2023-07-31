@@ -1,4 +1,4 @@
-package fr.kubys.leekscriptv4.langage;
+package fr.kubys.leekscriptv4.language;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.util.IconLoader;

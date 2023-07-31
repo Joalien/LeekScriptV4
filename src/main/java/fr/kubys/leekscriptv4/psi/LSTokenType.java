@@ -1,7 +1,7 @@
 package fr.kubys.leekscriptv4.psi;
 
 import com.intellij.psi.tree.IElementType;
-import fr.kubys.leekscriptv4.langage.LeekScriptLanguage;
+import fr.kubys.leekscriptv4.language.LeekScriptLanguage;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 

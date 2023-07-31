@@ -3,8 +3,8 @@ package fr.kubys.leekscriptv4.psi;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
-import fr.kubys.leekscriptv4.langage.LSFileType;
-import fr.kubys.leekscriptv4.langage.LeekScriptLanguage;
+import fr.kubys.leekscriptv4.language.LSFileType;
+import fr.kubys.leekscriptv4.language.LeekScriptLanguage;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

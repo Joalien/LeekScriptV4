@@ -12,7 +12,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import fr.kubys.leekscriptv4.langage.LeekScriptLanguage;
+import fr.kubys.leekscriptv4.language.LeekScriptLanguage;
 import fr.kubys.leekscriptv4.parser.LeekScriptLexer;
 import fr.kubys.leekscriptv4.parser.LeekScriptParser;
 import org.jetbrains.annotations.NotNull;

@@ -19,7 +19,7 @@ import fr.kubys.leekscriptv4.api.dto.AIDto;
 import fr.kubys.leekscriptv4.api.dto.AIResponse;
 import fr.kubys.leekscriptv4.api.dto.AIsResponse;
 import fr.kubys.leekscriptv4.api.dto.FolderDto;
-import fr.kubys.leekscriptv4.langage.LSFileType;
+import fr.kubys.leekscriptv4.language.LSFileType;
 import fr.kubys.leekscriptv4.options.PluginNotConfiguredException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.jsoup.nodes.Document;

@@ -1,4 +1,4 @@
-package fr.kubys.leekscriptv4.langage;
+package fr.kubys.leekscriptv4.language;
 
 import com.intellij.lang.Language;
 

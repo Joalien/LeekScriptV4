@@ -17,7 +17,7 @@
 
         <fileType
                 name="Leekscript"
-                implementationClass="fr.kubys.leekscriptv4.langage.LSFileType"
+                implementationClass="fr.kubys.leekscriptv4.language.LSFileType"
                 fieldName="INSTANCE"
                 language="LeekScriptV4"
                 extensions="lks"/>

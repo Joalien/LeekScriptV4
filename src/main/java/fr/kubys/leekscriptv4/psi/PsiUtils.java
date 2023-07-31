@@ -3,7 +3,7 @@ package fr.kubys.leekscriptv4.psi;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import fr.kubys.leekscriptv4.langage.LSFileType;
+import fr.kubys.leekscriptv4.language.LSFileType;
 import fr.kubys.leekscriptv4.psi.impl.LSVariableStatementImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
