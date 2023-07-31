@@ -23,6 +23,9 @@
                 extensions="lks"/>
         <lang.parserDefinition language="LeekScriptV4" implementationClass="fr.kubys.leekscriptv4.psi.LSParserDefinition"/>
         <lang.psiStructureViewFactory language="LeekScriptV4" implementationClass="fr.kubys.leekscriptv4.lang.LSPsiStructureViewFactory"/>
+        <lang.syntaxHighlighterFactory
+                language="LeekScriptV4"
+                implementationClass="fr.kubys.leekscriptv4.editor.LSSyntaxHighlighterFactory"/>
     </extensions>
 
     <actions>
