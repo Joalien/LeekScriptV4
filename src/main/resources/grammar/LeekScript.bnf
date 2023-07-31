@@ -1,0 +1,207 @@
+{
+  parserClass="fr.kubys.leekscriptv4.parser.LeekScriptParser"
+  parserUtilClass="fr.kubys.leekscriptv4.parser.LeekScriptParserUtil"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="LS"
+  psiImplClassSuffix="Impl"
+  psiPackage="fr.kubys.leekscriptv4.psi"
+  psiImplPackage="fr.kubys.leekscriptv4.psi.impl"
+  psiImplUtilClass="fr.kubys.leekscriptv4.psi.LSPsiImplUtil"
+
+  elementTypeHolderClass="fr.kubys.leekscriptv4.psi.LSTypes"
+  elementTypeClass="fr.kubys.leekscriptv4.psi.LSElementType"
+  tokenTypeClass="fr.kubys.leekscriptv4.psi.LSTokenType"
+  generateTokenAccessors=true
+
+  implements("(functionDeclaration|variableDeclaration|parameter|forInitializer|functionName|referenceExpression)")="fr.kubys.leekscriptv4.psi.LSNamedElement"
+  mixin("(functionDeclaration|variableDeclaration|parameter|forInitializer|functionName|referenceExpression)")="fr.kubys.leekscriptv4.psi.LSNamedElementImpl"
+
+  tokens=[
+    identifier='regexp:(\p{Alpha}|_)\w*'
+    number='regexp:\d+(\.\d*)?'
+    string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")"
+    comment='regexp://.*'
+    c_style_comment='regexp:/\*(.|\\n)*?\*/'
+    doc_comment='regexp:/\*\*(.|\\n)*?\*/'
+//    comment_tail='regexp:([^\*]*(\*+[^\*/])?)*(\*+/)?'
+
+    kw_function='function'
+    kw_var='var'
+    kw_global='global'
+    kw_if='if'
+    kw_else='else'
+    kw_while='while'
+    kw_do='do'
+    kw_for='for'
+    kw_in='in'
+    kw_null='null'
+    kw_true='true'
+    kw_false='false'
+    kw_return='return'
+    kw_break='break'
+    kw_continue='continue'
+
+    op_inc='++'
+    op_dec='--'
+    op_plus='+'
+    op_minus='-'
+    op_pow='**'
+    op_times='*'
+    op_divide='/'
+    op_modulo='%'
+    op_semicolon=';'
+    op_colon=':'
+    op_lparen='('
+    op_rparen=')'
+    op_lbracket='['
+    op_rbracket=']'
+    op_lbrace='{'
+    op_rbrace='}'
+    op_comma=','
+    op_plus_eq='+='
+    op_minus_eq='-='
+    op_times_eq='*='
+    op_divide_eq='/='
+    op_and_eq='&='
+    op_or_eq='|='
+    op_xor_eq='^='
+    op_assign='='
+    op_exclamation_mark='!'
+    op_not='not'
+    op_logical_or='||'
+    op_logical_and='&&'
+    op_or='or'
+    op_and='and'
+    op_unsigned_rshift='>>>'
+    op_rshift='>>'
+    op_lshift='<<'
+    op_xor='^'
+    op_le='<='
+    op_lt='<'
+    op_ge='>='
+    op_gt='>'
+    op_identity_equals='==='
+    op_equals='=='
+    op_identity_not_equals='!=='
+    op_not_equals='!='
+    op_binary_or='|'
+    op_binary_and='&'
+    op_reference='@'
+    op_ternary='?'
+  ]
+}
+
+program ::= sourceElements? <<eof>>
+
+private sourceElements ::= sourceElement+
+private sourceElement ::= functionDeclaration | statement | c_style_comment | doc_comment
+
+private statement ::=
+        variableStatement
+    |   emptyStatement
+    |   expressionStatement
+    |   ifStatement
+    |   whileStatement
+    |   doWhileStatement
+    |   forStatement
+    |   returnStatement
+    |   breakStatement
+    |   continueStatement
+
+referenceExpression ::= identifier
+functionDeclaration ::= 'function' functionName '(' formalParameterList? ')' block {methods=[getSignature getNbArguments] pin=1}
+
+functionName ::= identifier {methods=[getPresentation]}
+block ::= '{' statementList? '}'
+statementList ::= statement+
+
+variableStatement ::= modifier variableDeclarationList eos {methods = [isGlobal] pin=1}
+private variableDeclarationList ::= variableDeclaration (',' variableDeclaration)*
+variableDeclaration ::= identifier initialiser? {methods=[getPresentation] pin=1}
+initialiser ::= '=' singleExpression {pin=1}
+
+emptyStatement ::= ';'
+expressionStatement ::= singleExpression eos {pin=1}
+
+ifStatement ::= 'if' '(' singleExpression ')' thenBlock elseBlock? {pin=1}
+thenBlock ::= block | statement
+elseBlock ::= 'else' (block | statement) {pin=1}
+whileStatement ::= whileCondition (block | statement) {pin=1}
+whileCondition ::= 'while' '(' singleExpression ')' {pin=1}
+doWhileStatement ::= 'do' (block | statement) whileCondition eos  {pin=1}
+forStatement ::= 'for' '(' forInitializer ((':' forInitializer)? 'in' singleExpression | initialiser ';' singleExpression ';' singleExpression) ')' (block | statement) {pin=1}
+forInitializer ::= 'var'? referenceExpression
+returnStatement ::= 'return' singleExpression? eos {pin=2}
+breakStatement ::= 'break' eos  {pin=1}
+continueStatement ::= 'continue' eos  {pin=1}
+
+singleExpression ::= assignExpressionWrapper
+
+private assignExpressionWrapper ::= ternaryExpressionWrapper assignExpression*
+left assignExpression ::= assignmentOperator ternaryExpressionWrapper {pin=1}
+
+private ternaryExpressionWrapper ::= logicOrExpressionWrapper ternaryExpression?
+left ternaryExpression ::= '?' singleExpression ':' ternaryExpressionWrapper
+
+private logicOrExpressionWrapper ::= logicAndExpressionWrapper logicOrExpression*
+left logicOrExpression ::= ('||' | 'or') logicAndExpressionWrapper
+
+private logicAndExpressionWrapper ::= compareExpressionWrapper logicAndExpression*
+left logicAndExpression ::= ('&&' | 'and') compareExpressionWrapper
+
+private compareExpressionWrapper ::= bitwiseExpressionWrapper compareExpression*
+left compareExpression ::= (comparisonOperator | equalityOperator) bitwiseExpressionWrapper
+
+private bitwiseExpressionWrapper ::= shiftExpressionWrapper bitwiseExpression*
+left bitwiseExpression ::= bitwiseOperator shiftExpressionWrapper
+
+private shiftExpressionWrapper ::= additiveExpressionWrapper shiftExpression*
+left shiftExpression ::= shiftOperator additiveExpressionWrapper
+
+private additiveExpressionWrapper ::= multiplicativeExpressionWrapper additiveExpression*
+left additiveExpression ::= additiveOperator multiplicativeExpressionWrapper
+
+private multiplicativeExpressionWrapper ::= prefixExpression multiplicativeExpression*
+left multiplicativeExpression ::= multiplicativeOperator prefixExpression
+
+prefixExpression ::= (prefixOperator prefixExpression) | suffixExpressionWrapper
+
+private suffixExpressionWrapper ::= leftHandSideExpression suffixExpression*
+left suffixExpression ::= ('--' | '++')
+
+functionExpression ::= 'function' '(' formalParameterList? ')' block {pin=1}
+
+private leftHandSideExpression ::= memberExpression
+
+methodCall ::= referenceExpression arguments+ {methods=[getNbArguments]}
+private memberExpression ::= (methodCall | primaryExpression | functionExpression) ('[' singleExpression ']')*
+primaryExpression ::= referenceExpression | literal | arrayLiteral | '(' singleExpression ')'
+
+eos ::= ';'
+
+arguments ::= '(' argumentList? ')'
+argumentList ::= singleExpressionPart (',' singleExpressionPart)* {recoverWhile=singleExpressionRecover}
+private singleExpressionRecover ::= !(')')
+private singleExpressionPart ::= singleExpression {recoverWhile=singleExpressionPartRecover}
+private singleExpressionPartRecover ::= !(')' | ',')
+
+formalParameterList ::= parameter (',' parameter)*
+parameter ::= '@'? identifier
+
+private equalityOperator ::= '===' | '==' | '!==' | '!='
+private comparisonOperator ::= '<=' | '>=' | '<' | '>'
+modifier ::= 'var' | 'global'
+prefixOperator ::= '-' |  '!' | 'not'
+private shiftOperator ::= '>>>' | '<<' | '>>'
+private bitwiseOperator ::= '&' | '^' | '|'
+private multiplicativeOperator ::= '**' | '*' | '/' | '%'
+private additiveOperator ::= '+' | '-'
+private assignmentOperator ::= '=' | '+=' | '-=' | '*=' | '/=' | '&=' | '|=' | '^='
+literal ::= 'null' | 'true' | 'false' | string | number {methods=[getReference]}
+
+arrayLiteral ::= '[' (keyvalList | elementList)? ']'
+elementList ::= singleExpression (',' singleExpression)*
+keyvalList ::= keyval (',' keyval)*
+keyval ::= singleExpression ':' singleExpression

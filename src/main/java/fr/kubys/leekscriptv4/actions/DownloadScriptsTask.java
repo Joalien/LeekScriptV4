@@ -11,6 +11,7 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
 import fr.kubys.leekscriptv4.api.ApiException;
 import fr.kubys.leekscriptv4.api.LSApiClient;
@@ -18,8 +19,8 @@ import fr.kubys.leekscriptv4.api.dto.AIDto;
 import fr.kubys.leekscriptv4.api.dto.AIResponse;
 import fr.kubys.leekscriptv4.api.dto.AIsResponse;
 import fr.kubys.leekscriptv4.api.dto.FolderDto;
+import fr.kubys.leekscriptv4.langage.LSFileType;
 import fr.kubys.leekscriptv4.options.PluginNotConfiguredException;
-import fr.kubys.leekscriptv4.psi.PsiUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -104,7 +105,8 @@ public class DownloadScriptsTask implements Runnable {
 
         String fileName = String.format("%s__%s.lks", name, id);
 
-        PsiFile file = PsiUtils.createDummyFile(project, fileName, leekScript.getAi().getCode());
+        String text = leekScript.getAi().getCode();
+        PsiFile file = PsiFileFactory.getInstance(project).createFileFromText(fileName, LSFileType.INSTANCE, text);
 
         PsiFile existingFile = srcDirectory.findFile(fileName);
 

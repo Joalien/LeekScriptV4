@@ -4,7 +4,7 @@
     <name>LeekScriptV4 Template</name>
     <vendor>joalien</vendor>
 
-    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <moduleType id="LEEKSCRIPT_MODULE" implementationClass="fr.kubys.leekscriptv4.project.LSModuleType" order="last"/>
@@ -21,6 +21,8 @@
                 fieldName="INSTANCE"
                 language="LeekScriptV4"
                 extensions="lks"/>
+        <lang.parserDefinition language="LeekScriptV4" implementationClass="fr.kubys.leekscriptv4.psi.LSParserDefinition"/>
+        <lang.psiStructureViewFactory language="LeekScriptV4" implementationClass="fr.kubys.leekscriptv4.lang.LSPsiStructureViewFactory"/>
     </extensions>
 
     <actions>
