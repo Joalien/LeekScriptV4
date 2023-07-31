@@ -17,7 +17,7 @@ public class LSFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "Leek Script";
+        return "Leekscript";
     }
 
     @NotNull

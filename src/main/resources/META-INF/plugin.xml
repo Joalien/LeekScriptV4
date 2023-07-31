@@ -14,6 +14,13 @@
         <applicationService serviceImplementation="fr.kubys.leekscriptv4.options.LSSettings"/>
 
         <notificationGroup id="LeekScript" displayType="BALLOON"/>
+
+        <fileType
+                name="Leekscript"
+                implementationClass="fr.kubys.leekscriptv4.langage.LSFileType"
+                fieldName="INSTANCE"
+                language="LeekScriptV4"
+                extensions="lks"/>
     </extensions>
 
     <actions>
